@@ -10,16 +10,16 @@ const {
 	GraphQLString
 } = require('graphql');
 
-// fetch('https://www.goodreads.com/author/show.xml?id=4432&key=resKm8wwXsIcyEiTktvA')
-// 	.then(response => response.text())
-// 	.then(parseXML);
+
 
 const AuthorType = new GraphQLObjectType({
 	name: 'Author',
 	description: '...',
 	fields: () => ({
 		name: {
-			type: GraphQLString
+			type: GraphQLString,
+			resolve: xml =>
+				xml.GoodreadsResponse.author[0].name[0]
 		}
 	})
 });
@@ -34,6 +34,9 @@ module.exports = new GraphQLSchema({
 				args: {
 					id: {type: GraphQLInt}
 				},
+				resolve: (root, args) => fetch(`https://www.goodreads.com/author/show.xml?id=${args.id}&key=resKm8wwXsIcyEiTktvA`)
+				.then(response => response.text())
+				.then(parseXML)
 			}
 		})
 	})
