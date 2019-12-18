@@ -1,25 +1,20 @@
 'use strict';
 const express = require('express');
+const graphqlHTTP = require('express-graphql');
+const { buildSchema } = require('graphql');
 const app = express();
 
-app.use(express.json());
-app.use(express.static('public'));
-
-var { graphql, buildSchema } = require('graphql');
-
-var schema = buildSchema(`
+const schema = buildSchema(`
   type Query {
     hello: String
   }
 `);
 
-var root = { hello: () => 'Hello world!' };
+const root = { hello: () => 'Hello world!' };
 
-graphql(schema, '{ hello }', root).then((response) => {
-  console.log(response);
-});
-
-const port = process.env.PORT || 8000;
-app.listen(port, () => {
-  console.log(`Server is running on port: ${port}`);
-});
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: root,
+  graphiql: true,
+}));
+app.listen(4000, () => console.log('Now browse to localhost:4000/graphql'));
