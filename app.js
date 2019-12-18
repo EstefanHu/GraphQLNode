@@ -4,11 +4,13 @@ const graphqlHTTP = require('express-graphql');
 const { buildSchema } = require('graphql');
 const app = express();
 
-const schema = buildSchema(`
-  type Query {
-    hello: String
-  }
-`);
+const schema = require('./schema');
+
+// const schema = buildSchema(`
+//   type Query {
+//     hello: String
+//   }
+// `);
 
 const root = { hello: () => 'Hello world!' };
 
